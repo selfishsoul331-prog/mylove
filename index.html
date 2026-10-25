@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>For My Love 💖</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: radial-gradient(circle at 50% 0%, #7a1a4a 0%, #4a0a2a 45%, #1a0410 100%);
+    color: #fff;
+    min-height: 100vh;
+    overflow-x: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    position: relative;
+  }
+
+  /* Floating hearts background */
+  .float-heart {
+    position: fixed;
+    bottom: -10vh;
+    font-size: 22px;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 0;
+    animation: floatUp linear infinite;
+  }
+  @keyframes floatUp {
+    0% { transform: translateY(0) rotate(0); opacity: 0; }
+    12% { opacity: .75; }
+    100% { transform: translateY(-130vh) rotate(360deg); opacity: 0; }
+  }
+
+  .app { position: relative; z-index: 2; width: 100%; max-width: 520px; }
+
+  .screen {
+    display: none;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.18);
+    border-radius: 28px;
+    padding: 26px 20px;
+    text-align: center;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 24px 60px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.15);
+    animation: popIn .55s cubic-bezier(.2,.9,.3,1.2) both;
+  }
+  .screen.active { display: block; }
+  @keyframes popIn {
+    from { opacity: 0; transform: translateY(20px) scale(.96); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  h1 { font-size: clamp(1.5rem, 6vw, 2.1rem); margin-bottom: 10px; line-height: 1.2; }
+  h2 { font-size: clamp(1.25rem, 5vw, 1.6rem); margin-bottom: 10px; }
+  p { font-size: .98rem; line-height: 1.6; color: #ffe4ef; margin-bottom: 12px; }
+  .small { font-size: .85rem; opacity: .85; }
+
+  .btn {
+    display: inline-block;
+    border: none;
+    border-radius: 999px;
+    padding: 13px 26px;
+    font-size: .98rem;
+    font-weight: 700;
+    cursor: pointer;
+    color: #8a0f45;
+    background: linear-gradient(135deg, #fff0f6, #ffc6dd);
+    box-shadow: 0 10px 22px rgba(0,0,0,.28);
+    transition: transform .15s, box-shadow .15s;
+    margin: 8px 4px 0;
+    font-family: inherit;
+  }
+  .btn:hover { transform: translateY(-2px); }
+  .btn:active { transform: scale(.96); }
+  .btn.sec {
+    background: rgba(255,255,255,.15);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,.35);
+  }
+  .hidden { display: none !important; }
+
+  /* Illustration containers */
+  .illus { width: 140px; height: 140px; margin: 6px auto 14px; display: block; }
+
+  /* Heart beat */
+  .beat { animation: beat 1.15s infinite; }
+  @keyframes beat {
+    0%,100% { transform: scale(1); }
+    25% { transform: scale(1.1); }
+    40% { transform: scale(.97); }
+    60% { transform: scale(1.06); }
+  }
+
+  /* Question screen */
+  .q-area { position: relative; min-height: 130px; margin-top: 12px; }
+  .q-btns { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  #noBtn { position: relative; transition: left .2s, top .2s; }
+
+  /* Gift box */
+  .gift-wrap {
+    width: 180px; height: 180px;
+    margin: 10px auto;
+    position: relative;
+    cursor: pointer;
+    perspective: 800px;
+  }
+  .gift-lid {
+    position: absolute;
+    top: 20px; left: 10px;
+    width: 160px; height: 45px;
+    background: linear-gradient(135deg, #ff5e94, #c2185b);
+    border-radius: 8px;
+    transition: transform .8s cubic-bezier(.3,-.5,.4,1.5), top .8s ease, opacity .8s;
+    z-index: 3;
+    box-shadow: 0 6px 14px rgba(0,0,0,.35);
+  }
+  .gift-lid::before {
+    content: ""; position: absolute; left: 50%; top: 0;
+    width: 20px; height: 100%;
+    background: #ffd54f;
+    transform: translateX(-50%);
+  }
+  .gift-lid::after {
+    content: "🎀"; position: absolute;
+    left: 50%; top: -32px; transform: translateX(-50%);
+    font-size: 42px;
+    filter: drop-shadow(0 3px 5px rgba(0,0,0,.3));
+  }
+  .gift-box {
+    position: absolute;
+    top: 60px; left: 10px;
+    width: 160px; height: 110px;
+    background: linear-gradient(135deg, #e91e63, #880e4f);
+    border-radius: 6px 6px 14px 14px;
+    box-shadow: inset 0 -8px 0 rgba(0,0,0,.2), 0 8px 20px rgba(0,0,0,.35);
+  }
+  .gift-box::before {
+    content: ""; position: absolute; left: 50%; top: 0;
+    width: 20px; height: 100%; background: #ffd54f;
+    transform: translateX(-50%);
+  }
+  .gift-reveal {
+    position: absolute;
+    top: 30px; left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    font-size: 60px;
+    opacity: 0;
+    transition: opacity .8s .5s, transform .8s .5s;
+    z-index: 2;
+  }
+  .gift-wrap.opened .gift-lid {
+    top: -50px; transform: rotate(-15deg) scale(1.1); opacity: .95;
+  }
+  .gift-wrap.opened .gift-reveal {
+    opacity: 1; transform: translateX(-50%) translateY(-10px) scale(1.2);
+    animation: beat 1.2s infinite;
+  }
+
+  /* Cake with multiple candles */
+  .cake-stage {
+    position: relative;
+    width: 220px; height: 200px;
+    margin: 16px auto 8px;
+  }
+  .cake-body {
+    position: absolute; bottom: 10px; left: 20px;
+    width: 180px; height: 90px;
+    background: linear-gradient(180deg, #ff8ab5 0%, #c94f84 55%, #8e1e54 100%);
+    border-radius: 14px 14px 22px 22px;
+    box-shadow: inset 0 -10px 0 rgba(0,0,0,.15), 0 10px 24px rgba(0,0,0,.3);
+  }
+  .cake-frosting {
+    position: absolute; top: -10px; left: 0;
+    width: 100%; height: 32px;
+    background: linear-gradient(180deg, #fff0f5, #ffd1e3);
+    border-radius: 16px 16px 50% 50% / 16px 16px 30% 30%;
+    box-shadow: inset 0 -4px 0 rgba(255,180,210,.4);
+  }
+  .cake-frosting::before, .cake-frosting::after {
+    content: ""; position: absolute;
+    width: 22px; height: 14px; background: #fff0f5;
+    border-radius: 50%; top: 20px;
+  }
+  .cake-frosting::before { left: 10px; }
+  .cake-frosting::after { right: 10px; }
+
+  .candle-item {
+    position: absolute;
+    bottom: 100px;
+    width: 12px; height: 42px;
+    background: repeating-linear-gradient(45deg, #fff 0 5px, #ff4f88 5px 10px);
+    border-radius: 5px;
+    box-shadow: 0 2px 6px rgba(0,0,0,.3);
+  }
+  .candle-item:nth-of-type(1) { left: 50px; }
+  .candle-item:nth-of-type(2) { left: 104px; }
+  .candle-item:nth-of-type(3) { left: 158px; }
+
+  .flame {
+    position: absolute;
+    bottom: 142px;
+    font-size: 30px; line-height: 1;
+    background: none; border: none; padding: 4px;
+    cursor: pointer; z-index: 5;
+    filter: drop-shadow(0 0 12px #ffb703);
+    animation: flicker .4s infinite alternate;
+    transition: opacity .4s, transform .4s;
+  }
+  .flame:nth-of-type(1) { left: 36px; }
+  .flame:nth-of-type(2) { left: 90px; }
+  .flame:nth-of-type(3) { left: 144px; }
+  .flame.out { opacity: 0; transform: scale(.2); pointer-events: none; }
+  @keyframes flicker {
+    from { transform: scale(1) rotate(-3deg); }
+    to { transform: scale(1.15) rotate(3deg); }
+  }
+
+  /* Polaroid gallery */
+  .gallery { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0 10px; }
+  .polaroid {
+    background: #fff;
+    padding: 10px 10px 26px;
+    border-radius: 6px;
+    box-shadow: 0 8px 20px rgba(0,0,0,.35);
+    cursor: pointer;
+    position: relative;
+    transform: rotate(var(--r, 0deg));
+    transition: transform .3s;
+    color: #333;
+  }
+  .polaroid:active { transform: rotate(0) scale(1.03); }
+  .polaroid-img {
+    width: 100%;
+    aspect-ratio: 1/1;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 42px;
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+  }
+  .polaroid-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .polaroid-cap {
+    font-size: 11px;
+    text-align: center;
+    margin-top: 8px;
+    color: #8a0f45;
+    font-family: "Brush Script MT", cursive;
+    font-style: italic;
+    font-weight: 600;
+  }
+  .polaroid.flipped .polaroid-img { display: none; }
+  .polaroid-back {
+    display: none;
+    padding: 10px 4px;
+    color: #7a103f;
+    font-size: 12px;
+    line-height: 1.4;
+    text-align: center;
+    font-weight: 600;
+  }
+  .polaroid.flipped .polaroid-back { display: block; }
+  .polaroid.flipped { background: linear-gradient(135deg, #fff0f6, #ffd1e3); }
+
+  /* Scratch card */
+  .scratch-wrap {
+    position: relative;
+    width: 100%; min-height: 220px;
+    border-radius: 20px; overflow: hidden;
+    margin: 14px 0;
+    background: linear-gradient(135deg, #fff7fb, #ffe3ef);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.6);
+  }
+  .scratch-msg {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 22px 18px; color: #7a103f; text-align: center;
+  }
+  .scratch-msg p { color: #7a103f; font-weight: 600; font-size: .92rem; margin-bottom: 6px; }
+  #scratchCanvas {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    display: block; cursor: crosshair; touch-action: none;
+    transition: opacity .5s; z-index: 2;
+  }
+
+  /* Envelope / letter */
+  .envelope-wrap {
+    position: relative;
+    width: 240px; height: 170px;
+    margin: 20px auto;
+    cursor: pointer;
+    perspective: 900px;
+  }
+  .env-body {
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, #ff8ab5, #c94f84);
+    border-radius: 8px;
+    box-shadow: 0 12px 26px rgba(0,0,0,.4);
+    overflow: hidden;
+  }
+  .env-body::before {
+    content: ""; position: absolute;
+    top: 0; left: 0; right: 0;
+    border-left: 120px solid transparent;
+    border-right: 120px solid transparent;
+    border-top: 90px solid #e91e63;
+    filter: brightness(.9);
+  }
+  .env-heart {
+    position: absolute; top: 40%; left: 50%;
+    transform: translate(-50%,-50%);
+    font-size: 32px; z-index: 2;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,.3));
+    transition: opacity .4s;
+  }
+  .env-flap {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 90px;
+    background: linear-gradient(135deg, #ff5e94, #c2185b);
+    border-radius: 8px 8px 0 0;
+    transform-origin: top center;
+    transition: transform .7s cubic-bezier(.3,-.5,.4,1.5);
+    z-index: 3;
+    box-shadow: 0 2px 6px rgba(0,0,0,.2);
+  }
+  .envelope-wrap.open .env-flap { transform: rotateX(-180deg); }
+  .envelope-wrap.open .env-heart { opacity: 0; }
+
+  .letter-paper {
+    background: #fffaf5;
+    color: #4a0a2a;
+    padding: 22px 18px;
+    border-radius: 12px;
+    text-align: left;
+    font-family: "Georgia", serif;
+    font-size: .98rem;
+    line-height: 1.7;
+    min-height: 160px;
+    box-shadow: 0 12px 30px rgba(0,0,0,.4);
+    margin-top: 6px;
+    position: relative;
+    background-image:
+      repeating-linear-gradient(0deg, transparent 0 26px, rgba(200,50,120,.08) 26px 27px);
+    background-position: 0 20px;
+  }
+  .letter-paper::before {
+    content: "💌";
+    position: absolute; top: -14px; left: 12px;
+    font-size: 24px;
+  }
+  #typed { white-space: pre-wrap; }
+  .caret {
+    display: inline-block;
+    width: 2px; height: 1em;
+    background: #c2185b;
+    margin-left: 2px;
+    vertical-align: middle;
+    animation: blink .8s steps(1) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* Final */
+  .big-heart { font-size: 5rem; line-height: 1; margin: 6px 0 12px; animation: beat 1.15s infinite; filter: drop-shadow(0 0 22px rgba(255,255,255,.4)); }
+  .signature { font-weight: 800; margin-top: 12px; color: #ffe4ef; }
+
+  /* Confetti */
+  .burst {
+    position: fixed; z-index: 99; pointer-events: none;
+    animation: burst 1.7s ease-out forwards;
+  }
+  @keyframes burst {
+    to {
+      transform: translate(var(--x), var(--y)) rotate(360deg);
+      opacity: 0;
+    }
+  }
+
+  /* Progress dots */
+  .dots { display: flex; justify-content: center; gap: 6px; margin-top: 14px; }
+  .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: rgba(255,255,255,.3);
+    transition: background .3s, transform .3s;
+  }
+  .dot.active { background: #ff8ab5; transform: scale(1.4); }
+
+  @media (max-width: 380px) {
+    .screen { padding: 20px 14px; border-radius: 22px; }
+    .btn { padding: 12px 20px; font-size: .92rem; }
+    .gallery { gap: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- 1. WELCOME -->
+  <section class="screen active" id="welcome" data-step="0">
+    <svg class="illus beat" viewBox="0 0 100 100">
+      <defs>
+        <linearGradient id="hg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#ff8ab5"/>
+          <stop offset="1" stop-color="#c2185b"/>
+        </linearGradient>
+        <filter id="glow"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      </defs>
+      <path filter="url(#glow)" d="M50,88 C20,65 5,45 5,30 C5,15 17,5 30,5 C40,5 47,11 50,17 C53,11 60,5 70,5 C83,5 95,15 95,30 C95,45 80,65 50,88 Z" fill="url(#hg)"/>
+    </svg>
+    <h1>Hey My Love 💖</h1>
+    <p>Tumhare liye ek chhota sa surprise hai…</p>
+    <p class="small">Phone paas rakho, smile karke open karo 😊</p>
+    <button class="btn" data-next="question">Open Your Surprise 🎁</button>
+  </section>
+
+  <!-- 2. QUESTION -->
+  <section class="screen" id="question" data-step="1">
+    <h2>Ek Question, My Love 💭</h2>
+    <p>Kya tum meri hamesha rehna chahogi?</p>
+    <div class="q-area" id="qArea">
+      <div class="q-btns">
+        <button class="btn" id="yesBtn">Yes 💖</button>
+        <button class="btn sec" id="noBtn">No 😅</button>
+      </div>
+    </div>
+    <button class="btn hidden" id="qNext">Aage chalo ➡️</button>
+  </section>
+
+  <!-- 3. GIFT -->
+  <section class="screen" id="gift" data-step="2">
+    <h2>Ye Gift Tumhare Liye 🎁</h2>
+    <p class="small">Gift box ko tap karo — My Love ke liye kuch hai andar 💝</p>
+
+    <div class="gift-wrap" id="giftWrap">
+      <div class="gift-reveal">💖</div>
+      <div class="gift-box"></div>
+      <div class="gift-lid"></div>
+    </div>
+
+    <p id="giftText" class="small">Tap the gift box 🎀</p>
+    <button class="btn hidden" id="giftNext">Next ➡️</button>
+  </section>
+
+  <!-- 4. CAKE -->
+  <section class="screen" id="cake" data-step="3">
+    <h2>Sweetheart 💋 </h2>
+    <p>Ye cake tumhare liye hai. Saari candles blow karo 🎂</p>
+
+    <div class="cake-stage">
+      <button class="flame" data-i="0" aria-label="blow candle">🔥</button>
+      <button class="flame" data-i="1" aria-label="blow candle">🔥</button>
+      <button class="flame" data-i="2" aria-label="blow candle">🔥</button>
+      <div class="candle-item"></div>
+      <div class="candle-item"></div>
+      <div class="candle-item"></div>
+      <div class="cake-body"><div class="cake-frosting"></div></div>
+    </div>
+
+    <p id="cakeText" class="small">0 / 3 candles blown</p>
+    <button class="btn hidden" id="cakeNext">Next ➡️</button>
+  </section>
+
+  <!-- 5. PHOTOS -->
+  <section class="screen" id="photos" data-step="4">
+    <h2>Hamari Yaadein 📸</h2>
+    <p class="small">Har photo pe tap karo — piche kuch message hai 💕</p>
+
+    <div class="gallery">
+      <!-- Apni photo lagane ke liye: <div class="polaroid-img"><img src="photo1.jpg" alt=""></div> -->
+      <div class="polaroid" style="--r:-2deg">
+        <div class="polaroid-img" style="background: linear-gradient(135deg,#ffb6c1,#ff69b4);">💑</div>
+        <div class="polaroid-back">Tumhari smile, meri favourite cheez. 🌸</div>
+        <div class="polaroid-cap">My Love 💕</div>
+      </div>
+      <div class="polaroid" style="--r:2deg">
+        <div class="polaroid-img" style="background: linear-gradient(135deg,#ffc1e3,#ff5e94);">🌹</div>
+        <div class="polaroid-back">Tumhare saath har pal special hai, sweetheart 💋</div>
+        <div class="polaroid-cap">Sweetheart</div>
+      </div>
+      <div class="polaroid" style="--r:1.5deg">
+        <div class="polaroid-img" style="background: linear-gradient(135deg,#ffd1dc,#ff2d75);">💌</div>
+        <div class="polaroid-back">Tumhari baatein, meri favourite music. 🎵</div>
+        <div class="polaroid-cap">My Love</div>
+      </div>
+      <div class="polaroid" style="--r:-1.5deg">
+        <div class="polaroid-img" style="background: linear-gradient(135deg,#ffe4ec,#e91e63);">❤️</div>
+        <div class="polaroid-back">Forever tumhara, always &amp; forever. 💍</div>
+        <div class="polaroid-cap">Only You</div>
+      </div>
+    </div>
+
+    <button class="btn" data-next="scratch">Aage ➡️</button>
+  </section>
+
+  <!-- 6. SCRATCH -->
+  <section class="screen" id="scratch" data-step="5">
+    <h2>Scratch karo, My Love 💌</h2>
+    <p class="small">Gold card ko ungli se srach kijiye…</p>
+
+    <div class="scratch-wrap" id="scratchWrap">
+      <div class="scratch-msg">
+        <div style="font-size:2rem;margin-bottom:6px;">💖</div>
+        <p>My Love, tum meri life ki sabse pyari surprise ho.</p>
+        <p>Sweetheart 💋 Fena, tumhari smile meri favourite.</p>
+        <p>I love you so much! 💕</p>
+      </div>
+      <canvas id="scratchCanvas"></canvas>
+    </div>
+
+    <button class="btn hidden" id="scratchNext">Last Surprise 💝</button>
+  </section>
+
+  <!-- 7. LETTER -->
+  <section class="screen" id="letter" data-step="6">
+    <h2>Ek Chitthi, My Love 💌</h2>
+    <p class="small">Envelope ko tap karo…</p>
+
+    <div class="envelope-wrap" id="envelope">
+      <div class="env-body"></div>
+      <div class="env-heart">💖</div>
+      <div class="env-flap"></div>
+    </div>
+
+    <div id="letterPaper" class="letter-paper hidden">
+      <div id="typed"></div>
+      <span class="caret" id="caret"></span>
+    </div>
+
+    <button class="btn hidden" id="letterNext">Final Surprise 💝</button>
+  </section>
+
+  <!-- 8. FINAL -->
+  <section class="screen" id="final" data-step="7">
+    <div class="big-heart">❤️</div>
+    <h1>I Love You, My Love 💖</h1>
+    <p>Sweetheart 💋 , tum meri life ka sabse pyara hissa ho.</p>
+    <p>Tumhari smile, tumhari baatein, aur tumhara saath — sab special hai.</p>
+    <p>Ye chhota sa surprise sirf tumhare liye tha. You are loved today and every day. 💕</p>
+    <p class="signature">— Sweetheart 💋 </p>
+    <button class="btn sec" id="replayBtn">Replay 🔁</button>
+  </section>
+
+  <div class="dots" id="dots"></div>
+</div>
+
+<script>
+  /* ===== Sound (Web Audio - no files needed) ===== */
+  let audioCtx;
+  function playTone(freq, dur, type) {
+    try {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = type || 'sine';
+      osc.frequency.value = freq;
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + dur);
+      osc.start();
+      osc.stop(audioCtx.currentTime + dur);
+    } catch (e) {}
+  }
+  const tapSound = () => playTone(660, 0.08, 'sine');
+  const successSound = () => { playTone(523, 0.1); setTimeout(() => playTone(659, 0.1), 90); setTimeout(() => playTone(784, 0.2), 180); };
+
+  /* ===== Floating hearts ===== */
+  const heartEmojis = ['💖','💕','💗','💘','✨','💋','🌸'];
+  for (let i = 0; i < 22; i++) {
+    const el = document.createElement('span');
+    el.className = 'float-heart';
+    el.textContent = heartEmojis[Math.floor(Math.random()*heartEmojis.length)];
+    el.style.left = Math.random() * 100 + 'vw';
+    el.style.fontSize = (14 + Math.random()*22) + 'px';
+    el.style.animationDuration = (12 + Math.random()*16) + 's';
+    el.style.animationDelay = (-Math.random()*20) + 's';
+    document.body.appendChild(el);
+  }
+
+  /* ===== Screen switch ===== */
+  const screens = document.querySelectorAll('.screen');
+  const dotsWrap = document.getElementById('dots');
+  const totalSteps = screens.length;
+  screens.forEach((_, i) => {
+    const d = document.createElement('span');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    dotsWrap.appendChild(d);
+  });
+
+  function showScreen(id) {
+    screens.forEach(s => s.classList.remove('active'));
+    const target = document.getElementById(id);
+    if (!target) return;
+    target.classList.add('active');
+
+    const step = parseInt(target.dataset.step || '0', 10);
+    dotsWrap.querySelectorAll('.dot').forEach((d, i) => {
+      d.classList.toggle('active', i === step);
+    });
+
+    if (id === 'scratch') setTimeout(initScratch, 80);
+    if (id === 'final') burstHearts();
+  }
+
+  document.querySelectorAll('[data-next]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      tapSound();
+      showScreen(btn.dataset.next);
+    });
+  });
+
+  /* ===== Question - No button runs away ===== */
+  const qArea = document.getElementById('qArea');
+  const noBtn = document.getElementById('noBtn');
+  const yesBtn = document.getElementById('yesBtn');
+  const qNext = document.getElementById('qNext');
+  let noMoves = 0;
+
+  function dodgeNo() {
+    tapSound();
+    if (noMoves >= 4) {
+      noBtn.textContent = 'Ok, Yes 💖';
+      noMoves = 999;
+      return;
+    }
+    const areaRect = qArea.getBoundingClientRect();
+    const btnRect = noBtn.getBoundingClientRect();
+    const maxX = Math.max(10, areaRect.width - btnRect.width - 10);
+    const maxY = 60;
+    noBtn.style.position = 'absolute';
+    noBtn.style.left = Math.random() * maxX + 'px';
+    noBtn.style.top = Math.random() * maxY + 'px';
+    noMoves++;
+    if (noMoves === 3) noBtn.textContent = 'Are you sure? 😢';
+    if (noMoves === 4) noBtn.textContent = 'Really? 🥺';
+  }
+  noBtn.addEventListener('mouseover', () => { if (noMoves < 999) dodgeNo(); });
+  noBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (noMoves >= 999) { revealYes(); } else { dodgeNo(); }
+  });
+
+  function revealYes() {
+    successSound();
+    yesBtn.textContent = 'I knew it! 💕';
+    yesBtn.disabled = true;
+    qNext.classList.remove('hidden');
+    burstHearts();
+  }
+  yesBtn.addEventListener('click', revealYes);
+  qNext.addEventListener('click', () => showScreen('gift'));
+
+  /* ===== Gift ===== */
+  const giftWrap = document.getElementById('giftWrap');
+  const giftText = document.getElementById('giftText');
+  const giftNext = document.getElementById('giftNext');
+  let giftOpened = false;
+
+  giftWrap.addEventListener('click', () => {
+    if (giftOpened) return;
+    giftOpened = true;
+    playTone(880, 0.15); setTimeout(() => playTone(1046, 0.2), 120);
+    giftWrap.classList.add('opened');
+    giftText.innerHTML = 'Ye tumhare liye, My Love 💖<br><span class="small">Sweetheart 💋  — tum meri sabse badi wish ho.</span>';
+    giftNext.classList.remove('hidden');
+    burstHearts();
+  });
+  giftNext.addEventListener('click', () => showScreen('cake'));
+
+  /* ===== Cake candles ===== */
+  const flames = document.querySelectorAll('#cake .flame');
+  const cakeText = document.getElementById('cakeText');
+  const cakeNext = document.getElementById('cakeNext');
+  let blownCount = 0;
+
+  flames.forEach(f => {
+    f.addEventListener('click', () => {
+      if (f.classList.contains('out')) return;
+      f.classList.add('out');
+      playTone(392, 0.15, 'triangle');
+      blownCount++;
+      cakeText.textContent = blownCount + ' / 3 candles blown';
+      if (blownCount === 3) {
+        setTimeout(() => { successSound(); burstHearts(); }, 250);
+        cakeText.innerHTML = 'Wish granted 💫<br><span class="small">All your dreams come true, My Love.</span>';
+        cakeNext.classList.remove('hidden');
+      }
+    });
+  });
+  cakeNext.addEventListener('click', () => showScreen('photos'));
+
+  /* ===== Polaroid flip ===== */
+  document.querySelectorAll('.polaroid').forEach(p => {
+    p.addEventListener('click', () => {
+      p.classList.toggle('flipped');
+      tapSound();
+    });
+  });
+
+  /* ===== Scratch ===== */
+  let scratchCanvas, scratchCtx, scratched = false, drawing = false, checkCount = 0, resizeTimer;
+
+  function initScratch() {
+    scratchCanvas = document.getElementById('scratchCanvas');
+    const wrap = document.getElementById('scratchWrap');
+    if (!scratchCanvas || !wrap) return;
+    const rect = wrap.getBoundingClientRect();
+    if (rect.width === 0) return;
+
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    scratchCanvas.width = Math.floor(rect.width * dpr);
+    scratchCanvas.height = Math.floor(rect.height * dpr);
+    scratchCanvas.style.width = rect.width + 'px';
+    scratchCanvas.style.height = rect.height + 'px';
+    scratchCanvas.style.opacity = '1';
+    scratchCanvas.style.pointerEvents = 'auto';
+
+    scratchCtx = scratchCanvas.getContext('2d');
+    scratchCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    scratchCtx.globalCompositeOperation = 'source-over';
+
+    const grad = scratchCtx.createLinearGradient(0, 0, rect.width, rect.height);
+    grad.addColorStop(0, '#f7d774');
+    grad.addColorStop(0.5, '#e9b949');
+    grad.addColorStop(1, '#f5e6a8');
+    scratchCtx.fillStyle = grad;
+    scratchCtx.fillRect(0, 0, rect.width, rect.height);
+
+    scratchCtx.fillStyle = 'rgba(120,70,0,.78)';
+    scratchCtx.font = 'bold 22px system-ui, sans-serif';
+    scratchCtx.textAlign = 'center';
+    scratchCtx.textBaseline = 'middle';
+    scratchCtx.fillText('Scratch Me 💋', rect.width / 2, rect.height / 2);
+    scratchCtx.globalCompositeOperation = 'destination-out';
+
+    scratched = false; drawing = false; checkCount = 0;
+    document.getElementById('scratchNext').classList.add('hidden');
+  }
+
+  function pos(e) {
+    const r = scratchCanvas.getBoundingClientRect();
+    return { x: e.clientX - r.left, y: e.clientY - r.top };
+  }
+  function scratchAt(x, y) {
+    if (!scratchCtx || scratched) return;
+    scratchCtx.beginPath();
+    scratchCtx.arc(x, y, 27, 0, Math.PI * 2);
+    scratchCtx.fill();
+  }
+  function check() {
+    if (scratched || !scratchCtx) return;
+    checkCount++;
+    if (checkCount % 12 !== 0) return;
+    const w = scratchCanvas.width, h = scratchCanvas.height;
+    const data = scratchCtx.getImageData(0, 0, w, h).data;
+    let clear = 0, total = 0;
+    for (let i = 3; i < data.length; i += 40) {
+      total++;
+      if (data[i] === 0) clear++;
+    }
+    if (total && clear / total > 0.42) {
+      scratched = true;
+      scratchCanvas.style.opacity = '0';
+      scratchCanvas.style.pointerEvents = 'none';
+      document.getElementById('scratchNext').classList.remove('hidden');
+      burstHearts(); successSound();
+    }
+  }
+
+  (function bindScratch() {
+    const c = document.getElementById('scratchCanvas');
+    if (!c) return;
+    c.addEventListener('pointerdown', e => {
+      if (scratched) return; drawing = true;
+      c.setPointerCapture(e.pointerId);
+      const p = pos(e); scratchAt(p.x, p.y); check();
+    });
+    c.addEventListener('pointermove', e => {
+      if (!drawing || scratched) return;
+      const p = pos(e); scratchAt(p.x, p.y); check();
+    });
+    c.addEventListener('pointerup', () => drawing = false);
+    c.addEventListener('pointercancel', () => drawing = false);
+    c.addEventListener('pointerleave', () => drawing = false);
+  })();
+
+  document.getElementById('scratchNext').addEventListener('click', () => {
+    tapSound(); showScreen('letter');
+  });
+
+  /* ===== Envelope + typewriter ===== */
+  const envelope = document.getElementById('envelope');
+  const letterPaper = document.getElementById('letterPaper');
+  const typed = document.getElementById('typed');
+  const caret = document.getElementById('caret');
+  const letterNext = document.getElementById('letterNext');
+
+  const letterText =
+`My Love,
+
+Tumse milke laga ki life mein kuch special hai. 
+Tumhari smile dekh ke din ban jata hai, 
+aur tumse baat karke sab theek lagta hai.
+
+Sweetheart 💋 , 
+tum meri life ka sabse pyara hissa ho.
+Main chahta hoon ki har khushi tumhare kadam chume,
+aur har dukh mujh tak aaye.
+
+Always yours,
+My Love 💖`;
+
+  let letterOpened = false, typingInterval;
+
+  envelope.addEventListener('click', () => {
+    if (letterOpened) return;
+    letterOpened = true;
+    playTone(740, 0.2); setTimeout(() => playTone(880, 0.25), 150);
+    envelope.classList.add('open');
+    setTimeout(() => {
+      letterPaper.classList.remove('hidden');
+      startType();
+    }, 550);
+  });
+
+  function startType() {
+    let i = 0;
+    typed.textContent = '';
+    clearInterval(typingInterval);
+    typingInterval = setInterval(() => {
+      typed.textContent = letterText.slice(0, ++i);
+      if (i % 3 === 0) playTone(1200, 0.02, 'sine');
+      if (i >= letterText.length) {
+        clearInterval(typingInterval);
+        letterNext.classList.remove('hidden');
+      }
+    }, 28);
+  }
+
+  letterNext.addEventListener('click', () => {
+    tapSound(); showScreen('final');
+  });
+
+  /* ===== Confetti ===== */
+  function burstHearts() {
+    const emojis = ['💖','💕','✨','💋','🌸','💗','🎉'];
+    for (let i = 0; i < 28; i++) {
+      const el = document.createElement('span');
+      el.className = 'burst';
+      el.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+      el.style.left = (50 + (Math.random()*40 - 20)) + 'vw';
+      el.style.top = (50 + (Math.random()*20 - 10)) + 'vh';
+      el.style.fontSize = (18 + Math.random()*22) + 'px';
+      el.style.setProperty('--x', (Math.random()*300 - 150) + 'px');
+      el.style.setProperty('--y', (-100 - Math.random()*250) + 'px');
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 1900);
+    }
+  }
+
+  /* ===== Replay ===== */
+  document.getElementById('replayBtn').addEventListener('click', () => {
+    tapSound();
+    // reset state
+    noMoves = 0;
+    noBtn.style.position = '';
+    noBtn.style.left = '';
+    noBtn.style.top = '';
+    noBtn.textContent = 'No 😅';
+    yesBtn.disabled = false;
+    yesBtn.textContent = 'Yes 💖';
+    qNext.classList.add('hidden');
+
+    giftOpened = false;
+    giftWrap.classList.remove('opened');
+    giftText.textContent = 'Tap the gift box 🎀';
+    giftNext.classList.add('hidden');
+
+    blownCount = 0;
+    flames.forEach(f => f.classList.remove('out'));
+    cakeText.textContent = '0 / 3 candles blown';
+    cakeNext.classList.add('hidden');
+
+    document.querySelectorAll('.polaroid').forEach(p => p.classList.remove('flipped'));
+
+    scratched = false;
+    const c = document.getElementById('scratchCanvas');
+    if (c) { c.style.opacity = '1'; c.style.pointerEvents = 'auto'; }
+    document.getElementById('scratchNext').classList.add('hidden');
+
+    letterOpened = false;
+    envelope.classList.remove('open');
+    letterPaper.classList.add('hidden');
+    typed.textContent = '';
+    caret.style.display = 'inline-block';
+    clearInterval(typingInterval);
+    letterNext.classList.add('hidden');
+
+    showScreen('welcome');
+  });
+
+  /* ===== Resize ===== */
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      if (document.getElementById('scratch').classList.contains('active') && !scratched) {
+        initScratch();
+      }
+    }, 300);
+  });
+</script>
+</body>
+</html>
